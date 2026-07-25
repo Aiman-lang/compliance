@@ -55,7 +55,6 @@
 
     main,
     section,
-    .header,
     .footer,
     .trust-bar,
     .portfolio,
@@ -64,8 +63,10 @@
     .why,
     .cta {
       max-width: 100%;
-      overflow-x: hidden;
+      overflow-x: clip;
     }
+
+    /* Header must NOT use overflow:hidden — it blocks the mobile menu */
 
     .container {
       width: min(100% - 2rem, var(--max));
@@ -78,15 +79,17 @@
     .header {
       position: fixed;
       inset: 0 0 auto 0;
-      z-index: 100;
-      background: rgba(255, 255, 255, 0.78);
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(16px);
       border-bottom: 1px solid transparent;
       transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+      overflow: visible;
     }
 
-    .header.scrolled {
-      background: rgba(255, 255, 255, 0.94);
+    .header.scrolled,
+    .header.menu-open {
+      background: rgba(255, 255, 255, 0.98);
       border-color: rgba(226, 232, 240, 0.9);
       box-shadow: 0 8px 30px rgba(7, 21, 40, 0.07);
     }
@@ -97,6 +100,8 @@
       justify-content: space-between;
       height: 74px;
       gap: 1.5rem;
+      position: relative;
+      z-index: 1001;
     }
 
     .logo {
@@ -216,15 +221,22 @@
 
     .menu-toggle {
       display: none;
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border: 1px solid var(--line);
       border-radius: 12px;
       background: white;
       cursor: pointer;
       place-items: center;
       flex-direction: column;
+      justify-content: center;
       gap: 5px;
+      flex-shrink: 0;
+      z-index: 1002;
+      position: relative;
+      pointer-events: auto;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
     }
 
     .menu-toggle span {
@@ -233,6 +245,41 @@
       height: 2px;
       background: var(--navy);
       border-radius: 2px;
+      transition: transform 0.2s, opacity 0.2s;
+      pointer-events: none;
+    }
+
+    .menu-toggle[aria-expanded="true"] span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .menu-toggle[aria-expanded="true"] span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle[aria-expanded="true"] span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .menu-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 21, 40, 0.35);
+      z-index: 999;
+    }
+
+    .menu-backdrop.show {
+      display: block;
+    }
+
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    body.menu-open .float-wa {
+      visibility: hidden;
+      pointer-events: none;
     }
 
     /* —— Hero —— */
@@ -451,13 +498,26 @@
     section { padding: 5.5rem 0; }
 
     .section-head {
-      max-width: 42rem;
+      max-width: min(42rem, 100%);
+      width: 100%;
       margin-bottom: 3rem;
+      box-sizing: border-box;
     }
 
     .section-head.center {
       text-align: center;
       margin-inline: auto;
+    }
+
+    .section-head h2 {
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .section-head p {
+      max-width: 100%;
+      overflow-wrap: anywhere;
     }
 
     .section-label {
@@ -723,174 +783,227 @@
 
     .offer-footer span { color: var(--teal-soft); }
 
-    /* —— Portfolio —— */
-    .portfolio {
-      background:
-        radial-gradient(ellipse 55% 45% at 15% 30%, rgba(13, 148, 136, 0.08), transparent 55%),
-        radial-gradient(ellipse 45% 40% at 90% 70%, rgba(27, 111, 181, 0.08), transparent 50%),
-        var(--white);
-    }
-
-    .portfolio-grid {
-      display: none;
-    }
-
-    .portfolio-marquee {
-      margin-top: 0.5rem;
-    }
-
-    .portfolio-marquee-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 1.15rem;
-      width: 100%;
-      max-width: 100%;
-      margin: 0;
-      padding: 0.5rem 0 0.25rem;
+    /* —— Portfolio (unused featured styles kept lightweight) —— */
+    .portfolio-featured {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 1.5rem;
+      align-items: stretch;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, #071528 0%, #0f2a4d 50%, #155a8a 100%);
+      border-radius: 24px;
       overflow: hidden;
-    }
-
-    .portfolio-marquee-stack .marquee-wrap {
-      max-width: 100%;
-      overflow: hidden;
-      mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-      -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-    }
-
-    .portfolio-marquee-stack .marquee-track {
-      animation-duration: 42s;
-      gap: 1.15rem;
-      will-change: transform;
-    }
-
-    .portfolio-marquee-stack .marquee-group {
-      gap: 1.15rem;
-    }
-
-    .portfolio-marquee-stack .site-card {
-      width: min(280px, 78%);
-      max-width: 300px;
-      min-height: 270px;
-      animation: cardFloat 5s ease-in-out infinite;
-    }
-
-    .portfolio-marquee-stack .site-card:nth-child(2n) {
-      animation-delay: -1.5s;
-    }
-
-    .portfolio-marquee-stack .site-card:nth-child(3n) {
-      animation-delay: -3s;
-    }
-
-    @keyframes cardFloat {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
-    }
-
-    .portfolio-marquee-stack .site-preview {
-      height: 120px;
-      background-size: 200% 200%;
-      animation: gradientShift 8s ease infinite;
-    }
-
-    @keyframes gradientShift {
-      0%, 100% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-    }
-
-    .site-card:hover {
-      animation-play-state: paused;
-    }
-
-    .site-card {
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: transform 0.3s, box-shadow 0.3s;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .site-card:hover {
-      transform: translateY(-6px);
       box-shadow: var(--shadow-lg);
-    }
-
-    .site-preview {
-      height: 130px;
-      position: relative;
-      display: flex;
-      align-items: flex-end;
-      padding: 1.1rem 1.2rem;
       color: white;
-      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .site-preview::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, transparent 20%, rgba(7, 21, 40, 0.55) 100%);
-    }
-
-    .site-preview span {
-      position: relative;
-      z-index: 1;
-      font-family: "Fraunces", serif;
-      font-size: 1.15rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
-    .site-preview.p1 { background: linear-gradient(135deg, #0f2a4d, #1b6fb5 60%, #2dd4bf); }
-    .site-preview.p2 { background: linear-gradient(135deg, #134e4a, #0d9488 55%, #38bdf8); }
-    .site-preview.p3 { background: linear-gradient(135deg, #1e3a5f, #2563eb 50%, #c084fc); }
-    .site-preview.p4 { background: linear-gradient(135deg, #1a2744, #0ea5e9 55%, #f59e0b); }
-    .site-preview.p5 { background: linear-gradient(135deg, #1c1917, #b45309 50%, #d4a017); }
-
-    .site-body {
-      padding: 1.25rem 1.35rem 1.4rem;
+    .portfolio-featured-visual {
+      min-height: 220px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(45, 212, 191, 0.35), transparent 45%),
+        radial-gradient(circle at 80% 80%, rgba(45, 143, 217, 0.35), transparent 40%),
+        linear-gradient(160deg, #0b1f3a, #1b6fb5);
       display: flex;
       flex-direction: column;
-      gap: 0.55rem;
-      flex: 1;
+      justify-content: flex-end;
+      padding: 1.75rem;
+      position: relative;
     }
 
-    .site-body h3 {
-      font-size: 1.05rem;
-      letter-spacing: -0.02em;
-    }
-
-    .site-body p {
-      font-size: 0.88rem;
-      color: var(--muted);
-      flex: 1;
-    }
-
-    .site-body a {
+    .premium-badge {
+      position: absolute;
+      top: 1.1rem;
+      left: 1.1rem;
       display: inline-flex;
       align-items: center;
       gap: 0.35rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--blue);
+      padding: 0.4rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(212, 160, 23, 0.2);
+      border: 1px solid rgba(232, 197, 71, 0.45);
+      color: #f5d76e;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .portfolio-featured-visual strong {
+      font-family: "Fraunces", serif;
+      font-size: 1.85rem;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+    }
+
+    .portfolio-featured-visual span {
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 0.95rem;
       margin-top: 0.35rem;
     }
 
-    .site-body a:hover { color: var(--teal); }
+    .portfolio-featured-body {
+      padding: 1.85rem 1.75rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.85rem;
+    }
+
+    .portfolio-featured-body h3 {
+      font-family: "Fraunces", serif;
+      font-size: 1.45rem;
+      letter-spacing: -0.02em;
+    }
+
+    .portfolio-featured-body p {
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 0.98rem;
+    }
+
+    .portfolio-featured-body .btn {
+      align-self: flex-start;
+      margin-top: 0.35rem;
+    }
+
+    /* Compact moving websites strip */
+    .portfolio {
+      background: var(--bg);
+      overflow: hidden;
+      padding-top: 3.5rem;
+      padding-bottom: 3.5rem;
+    }
+
+    .portfolio .section-head {
+      margin-bottom: 1.5rem;
+    }
+
+    .sites-marquee {
+      width: 100%;
+      max-width: 100%;
+      overflow: hidden;
+      position: relative;
+      padding: 0.25rem 0;
+    }
+
+    .sites-marquee::before,
+    .sites-marquee::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 36px;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .sites-marquee::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--bg), transparent);
+    }
+
+    .sites-marquee::after {
+      right: 0;
+      background: linear-gradient(270deg, var(--bg), transparent);
+    }
+
+    .sites-track {
+      display: flex;
+      width: max-content;
+      gap: 0.75rem;
+      animation: sitesScroll 28s linear infinite;
+      will-change: transform;
+    }
+
+    .sites-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes sitesScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    .sites-group {
+      display: flex;
+      gap: 0.75rem;
+      flex-shrink: 0;
+      align-items: center;
+    }
+
+    .site-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.55rem 0.9rem 0.55rem 0.55rem;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid var(--line);
+      box-shadow: 0 6px 18px rgba(7, 21, 40, 0.06);
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      color: var(--navy);
+      font-size: 0.88rem;
+      font-weight: 600;
+      max-width: none;
+    }
+
+    .site-chip:hover {
+      transform: translateY(-2px);
+      border-color: rgba(27, 111, 181, 0.3);
+      box-shadow: 0 10px 24px rgba(27, 111, 181, 0.12);
+      color: var(--blue);
+    }
+
+    .site-chip-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      font-size: 0.95rem;
+      background: linear-gradient(135deg, rgba(27, 111, 181, 0.12), rgba(13, 148, 136, 0.14));
+    }
+
+    .site-chip small {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--muted);
+      margin-top: 0.05rem;
+    }
+
+    .site-chip-text {
+      line-height: 1.2;
+      text-align: left;
+    }
+
+    .sites-hint {
+      text-align: center;
+      margin-top: 0.85rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
 
     .portfolio-note {
-      margin-top: 2rem;
+      margin-top: 1.15rem;
       text-align: center;
       color: var(--slate);
-      font-size: 0.98rem;
-      max-width: 40rem;
+      font-size: 0.92rem;
+      max-width: 36rem;
       margin-inline: auto;
     }
 
-    /* —— Testimonials —— */
+    @media (prefers-reduced-motion: reduce) {
+      .sites-track {
+        animation: none !important;
+      }
+    }
+
+    /* —— Testimonials (slider) —— */
     .testimonials {
       background:
         radial-gradient(ellipse 60% 50% at 50% 0%, rgba(27, 111, 181, 0.08), transparent 60%),
@@ -902,7 +1015,7 @@
       width: fit-content;
       align-items: center;
       gap: 0.65rem;
-      margin: 0 auto 2.5rem;
+      margin: 0 auto 1.75rem;
       padding: 0.8rem 1.4rem;
       border-radius: 999px;
       background: linear-gradient(135deg, rgba(27, 111, 181, 0.1), rgba(13, 148, 136, 0.12));
@@ -919,67 +1032,238 @@
       font-size: 1.2rem;
     }
 
-    .testimonial-grid {
-      display: none;
-    }
-
-    .testimonial-marquee {
-      margin-top: 0.25rem;
-    }
-
-    .testimonial {
-      background: white;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 1.75rem;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      transition: transform 0.25s, box-shadow 0.25s;
-    }
-
-    .testimonial:hover {
-      transform: translateY(-4px);
+    /* Featured: Jayesh Thakkar */
+    .jayesh-feature {
+      max-width: 860px;
+      margin: 0 auto 2rem;
+      background: linear-gradient(145deg, #071528 0%, #0f2a4d 48%, #164a7a 100%);
+      border-radius: 24px;
+      padding: 1.85rem 1.75rem 1.65rem;
+      color: white;
       box-shadow: var(--shadow-lg);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .quote-mark {
+    .jayesh-feature::before {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(45, 212, 191, 0.28), transparent 70%);
+      top: -80px;
+      right: -40px;
+      pointer-events: none;
+    }
+
+    .jayesh-feature::after {
+      content: "";
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(212, 160, 23, 0.22), transparent 70%);
+      bottom: -50px;
+      left: -30px;
+      pointer-events: none;
+    }
+
+    .jayesh-feature-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .jayesh-feature-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      margin-bottom: 1rem;
+    }
+
+    .jayesh-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(212, 160, 23, 0.2);
+      border: 1px solid rgba(232, 197, 71, 0.4);
+      color: #f5d76e;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .jayesh-feature .stars {
+      color: #f5d76e;
+    }
+
+    .jayesh-feature .quote-mark {
       font-family: "Fraunces", serif;
       font-size: 3rem;
+      line-height: 0.85;
+      color: rgba(45, 212, 191, 0.55);
+      margin-bottom: 0.35rem;
+    }
+
+    .jayesh-feature blockquote {
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 1.35rem;
+    }
+
+    .jayesh-feature blockquote p + p {
+      margin-top: 0.7rem;
+    }
+
+    .jayesh-feature .person {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      padding-top: 1.15rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .jayesh-feature .person strong {
+      color: white;
+      font-size: 1.08rem;
+    }
+
+    .jayesh-feature .person span {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .jayesh-feature .site-link {
+      color: var(--teal-soft);
+    }
+
+    .jayesh-feature .site-link:hover {
+      color: white;
+      text-decoration: underline;
+    }
+
+    .more-reviews-label {
+      text-align: center;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin: 0 auto 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .review-slider {
+      max-width: 780px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .review-viewport {
+      overflow: hidden;
+      border-radius: 24px;
+      touch-action: pan-y;
+    }
+
+    .review-track {
+      display: flex;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+    }
+
+    .review-slide {
+      min-width: 100%;
+      max-width: 100%;
+      flex-shrink: 0;
+      box-sizing: border-box;
+      padding: 0.15rem;
+    }
+
+    .review-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      padding: 2rem 1.85rem 1.75rem;
+      box-shadow: var(--shadow-lg);
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      max-width: 100%;
+    }
+
+    .review-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .stars {
+      color: #e0a800;
+      font-size: 1.05rem;
+      letter-spacing: 0.08em;
       line-height: 1;
+    }
+
+    .review-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.3rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(13, 148, 136, 0.1);
+      color: #0f766e;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .review-card .quote-mark {
+      font-family: "Fraunces", serif;
+      font-size: 3.25rem;
+      line-height: 0.8;
       background: linear-gradient(135deg, var(--teal), var(--blue));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      opacity: 0.7;
-      margin-bottom: 0.15rem;
+      opacity: 0.65;
+      margin-bottom: 0.35rem;
     }
 
-    .testimonial blockquote {
+    .review-card blockquote {
       color: var(--slate);
-      font-size: 0.93rem;
+      font-size: 1.05rem;
+      line-height: 1.7;
       flex: 1;
       margin-bottom: 1.5rem;
     }
 
-    .testimonial blockquote p + p { margin-top: 0.75rem; }
+    .review-card blockquote p + p {
+      margin-top: 0.7rem;
+    }
 
-    .person {
+    .review-card .person {
       display: flex;
       align-items: center;
-      gap: 0.85rem;
-      padding-top: 1.15rem;
+      gap: 0.9rem;
+      padding-top: 1.2rem;
       border-top: 1px solid var(--line);
+      margin-top: auto;
     }
 
     .avatar {
-      width: 48px; height: 48px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       display: grid;
       place-items: center;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       color: white;
       flex-shrink: 0;
       box-shadow: 0 6px 14px rgba(7, 21, 40, 0.18);
@@ -994,20 +1278,20 @@
 
     .person strong {
       display: block;
-      font-size: 0.95rem;
+      font-size: 1.02rem;
       color: var(--navy);
     }
 
     .person span {
       display: block;
-      font-size: 0.8rem;
+      font-size: 0.84rem;
       color: var(--muted);
     }
 
     .person .site-link {
       display: inline-block;
-      margin-top: 0.25rem;
-      font-size: 0.8rem;
+      margin-top: 0.2rem;
+      font-size: 0.82rem;
       font-weight: 600;
       color: var(--blue);
     }
@@ -1015,6 +1299,67 @@
     .person .site-link:hover {
       color: var(--teal);
       text-decoration: underline;
+    }
+
+    .review-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.35rem;
+    }
+
+    .review-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1.5px solid var(--line);
+      background: white;
+      color: var(--navy);
+      font-size: 1.15rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      box-shadow: var(--shadow);
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .review-btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      transform: translateY(-1px);
+    }
+
+    .review-dots {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .review-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: none;
+      padding: 0;
+      background: #cbd5e1;
+      cursor: pointer;
+      transition: width 0.25s, background 0.25s;
+    }
+
+    .review-dot.active {
+      width: 22px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--blue), var(--teal));
+    }
+
+    .review-count {
+      text-align: center;
+      margin-top: 0.85rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
     }
 
     /* —— Contact —— */
@@ -1522,8 +1867,6 @@
       .hero-card { animation: none; }
       .marquee-track { animation: none; }
       .pill, .trust-badge, .hero-orb, .float-wa { animation: none; }
-      .portfolio-marquee-stack .site-card,
-      .portfolio-marquee-stack .site-preview { animation: none; }
     }
 
     /* —— Mobile —— */
@@ -1552,34 +1895,49 @@
 
       .nav-links {
         position: fixed;
-        inset: 74px 0 auto 0;
+        top: 74px;
+        left: 0;
+        right: 0;
         width: 100%;
         max-width: 100%;
-        background: white;
+        background: #ffffff;
         border-bottom: 1px solid var(--line);
         flex-direction: column;
         align-items: stretch;
-        padding: 1rem 1.25rem 1.25rem;
+        padding: 0.5rem 1.25rem 1.35rem;
         gap: 0;
         display: none;
-        box-shadow: 0 12px 30px rgba(7, 21, 40, 0.08);
-        overflow-x: hidden;
+        box-shadow: 0 16px 40px rgba(7, 21, 40, 0.14);
+        z-index: 1001;
+        overflow: visible;
+        max-height: calc(100vh - 74px);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
-      .nav-links.open { display: flex; }
+      .nav-links.open {
+        display: flex !important;
+      }
 
       .nav-links a {
-        padding: 0.85rem 0.5rem;
+        padding: 0.95rem 0.5rem;
         border-bottom: 1px solid var(--line);
+        font-size: 1rem;
+        color: var(--navy);
+        pointer-events: auto;
       }
 
       .nav-links .nav-cta {
-        margin-top: 0.75rem;
+        margin-top: 0.85rem;
         justify-content: center;
         width: 100%;
+        border-bottom: none;
       }
 
-      .menu-toggle { display: flex; flex-shrink: 0; }
+      .menu-toggle {
+        display: flex !important;
+        flex-shrink: 0;
+      }
 
       .logo {
         font-size: 0.95rem;
@@ -1613,21 +1971,83 @@
         border-radius: 16px;
       }
 
+      .process-grid,
+      .why-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .process-card {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        padding: 1.4rem 1.2rem;
+      }
+
+      .process .section-head h2,
       .section-head h2 {
-        font-size: clamp(1.5rem, 6vw, 2rem);
+        font-size: clamp(1.4rem, 6.2vw, 1.9rem);
+        line-height: 1.25;
         overflow-wrap: anywhere;
+        word-break: break-word;
+        max-width: 100%;
       }
 
-      .marquee-group .testimonial {
-        width: min(300px, 82vw);
-        min-height: 300px;
-        padding: 1.35rem;
+      .process .container,
+      #process .container {
+        width: min(100% - 1.5rem, var(--max));
+        max-width: 100%;
+        overflow: hidden;
       }
 
-      .marquee-group .site-card,
-      .portfolio-marquee-stack .site-card {
-        width: min(260px, 78vw);
-        min-height: 250px;
+      .urgency-strip {
+        font-size: 0.9rem;
+        padding: 1rem;
+        line-height: 1.45;
+      }
+
+      .portfolio-featured {
+        grid-template-columns: 1fr;
+      }
+
+      .sites-marquee::before,
+      .sites-marquee::after {
+        width: 22px;
+      }
+
+      .site-chip {
+        padding: 0.45rem 0.75rem 0.45rem 0.45rem;
+        font-size: 0.82rem;
+      }
+
+      .site-chip-icon {
+        width: 30px;
+        height: 30px;
+        font-size: 0.85rem;
+      }
+
+      .portfolio {
+        padding-top: 2.75rem;
+        padding-bottom: 2.75rem;
+      }
+
+      .jayesh-feature {
+        padding: 1.4rem 1.2rem 1.3rem;
+      }
+
+      .jayesh-feature blockquote {
+        font-size: 0.96rem;
+      }
+
+      .review-card {
+        padding: 1.5rem 1.25rem 1.35rem;
+        min-height: 0;
+      }
+
+      .review-card blockquote {
+        font-size: 0.98rem;
       }
 
       .channel span,
@@ -1659,7 +2079,7 @@
       }
 
       .nav { height: 64px; gap: 0.75rem; }
-      .nav-links { inset: 64px 0 auto 0; }
+      .nav-links { top: 64px; max-height: calc(100vh - 64px); }
 
       .logo-mark {
         width: 34px;
@@ -1779,12 +2199,16 @@
 
     .process {
       background: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+      overflow-x: hidden;
+      max-width: 100%;
     }
 
     .process-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 1.25rem;
+      width: 100%;
+      max-width: 100%;
       counter-reset: step;
     }
 
@@ -1796,6 +2220,11 @@
       box-shadow: var(--shadow);
       position: relative;
       transition: transform 0.25s, box-shadow 0.25s;
+      min-width: 0;
+      max-width: 100%;
+      width: 100%;
+      overflow-wrap: anywhere;
+      word-wrap: break-word;
     }
 
     .process-card:hover {
@@ -1816,17 +2245,40 @@
       margin-bottom: 1.1rem;
       background: linear-gradient(135deg, #1b6fb5, #0d9488);
       box-shadow: 0 10px 22px rgba(27, 111, 181, 0.3);
+      flex-shrink: 0;
     }
 
     .process-card h3 {
       font-size: 1.15rem;
       margin-bottom: 0.55rem;
       letter-spacing: -0.02em;
+      overflow-wrap: anywhere;
     }
 
     .process-card p {
       color: var(--slate);
       font-size: 0.95rem;
+      overflow-wrap: anywhere;
+    }
+
+    .process .section-head {
+      max-width: 100%;
+      width: 100%;
+      padding-inline: 0;
+    }
+
+    .process .section-head h2 {
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      hyphens: auto;
+    }
+
+    .urgency-strip {
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      box-sizing: border-box;
     }
 
     .why {
@@ -1917,13 +2369,17 @@
       font-weight: 600;
       color: var(--navy);
       font-size: 0.98rem;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow-wrap: anywhere;
     }
 
     .float-wa {
       position: fixed;
       right: 1.25rem;
       bottom: 1.25rem;
-      z-index: 200;
+      z-index: 900;
       display: inline-flex;
       align-items: center;
       gap: 0.55rem;
@@ -1985,6 +2441,8 @@
   </style>
 </head>
 <body>
+  <div class="menu-backdrop" id="menuBackdrop" hidden></div>
+
   <header class="header" id="header">
     <div class="container nav">
       <a href="#top" class="logo" aria-label="CompliTech Solutions home">
@@ -1992,13 +2450,14 @@
         Compli<span>Tech</span> Solutions
       </a>
 
-      <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+      <button type="button" class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
         <span></span><span></span><span></span>
       </button>
 
-      <nav class="nav-links" id="navLinks">
+      <nav class="nav-links" id="navLinks" aria-label="Main menu">
         <a href="#process">How It Works</a>
         <a href="#offerings">Services</a>
+        <a href="#portfolio">Websites</a>
         <a href="#why">Why Us</a>
         <a href="#testimonials">Reviews</a>
         <a href="#contact" class="btn btn-primary nav-cta">Start Registration</a>
@@ -2433,69 +2892,41 @@
     <section class="portfolio" id="portfolio">
       <div class="container">
         <div class="section-head center">
-          <span class="section-label">Websites We Built</span>
-          <h2>Live websites crafted by our developers</h2>
+          <span class="section-label">Client Websites</span>
+          <h2>Live websites we designed &amp; developed</h2>
           <p>
-            Beyond compliance, our technology team designs and develops professional, compliance-ready
-            websites for SEBI intermediaries and market professionals. Here are some of the sites we’ve delivered.
+            Professional, compliance-ready websites for SEBI intermediaries — built by our technology team
+            and trusted by market professionals across India.
           </p>
         </div>
 
-        <div class="portfolio-marquee-stack reveal" id="portfolioMarquee">
-        <div class="marquee-wrap">
-          <div class="marquee-track" id="portfolioTrack1">
-            <div class="marquee-group" id="portfolioGroup1">
-              <article class="site-card">
-                <div class="site-preview p1"><span>Jayesh Thakkar</span></div>
-                <div class="site-body">
-                  <h3>Jayesh Thakkar</h3>
-                  <p>Research Analyst platform — professional web presence built for content &amp; compliance needs.</p>
-                  <a href="https://jayeshthakkar.com" target="_blank" rel="noopener noreferrer">jayeshthakkar.com ↗</a>
-                </div>
-              </article>
-              <article class="site-card">
-                <div class="site-preview p2"><span>ShareBiz Research</span></div>
-                <div class="site-body">
-                  <h3>Saiprasad Holkar</h3>
-                  <p>ShareBiz Research — research &amp; advisory site for a SEBI intermediary.</p>
-                  <a href="https://sharebizresearch.com" target="_blank" rel="noopener noreferrer">sharebizresearch.com ↗</a>
-                </div>
-              </article>
-              <article class="site-card">
-                <div class="site-preview p3"><span>Vibhuti Sharma</span></div>
-                <div class="site-body">
-                  <h3>Vibhuti Sharma</h3>
-                  <p>SEBI Registered Research Analyst website — clean, professional, client-ready.</p>
-                  <a href="https://vibhutisharma.com" target="_blank" rel="noopener noreferrer">vibhutisharma.com ↗</a>
-                </div>
-              </article>
-              <article class="site-card">
-                <div class="site-preview p4"><span>ResearchLyne</span></div>
-                <div class="site-body">
-                  <h3>Amiteshwar Singh</h3>
-                  <p>ResearchLyne — modern research platform website by our developers.</p>
-                  <a href="https://researchlyne.com" target="_blank" rel="noopener noreferrer">researchlyne.com ↗</a>
-                </div>
-              </article>
-              <article class="site-card">
-                <div class="site-preview p5"><span>Maman &amp; Kav</span></div>
-                <div class="site-body">
-                  <h3>Maman &amp; Kav Securities</h3>
-                  <p>Securities firm website — trust, clarity, and strong market presence.</p>
-                  <a href="https://mamandkavsecurities.com" target="_blank" rel="noopener noreferrer">mamandkavsecurities.com ↗</a>
-                </div>
-              </article>
+        <div class="sites-marquee reveal" id="sitesMarquee">
+          <div class="sites-track" id="sitesTrack">
+            <div class="sites-group" id="sitesGroup">
+              <a class="site-chip" href="https://jayeshthakkar.com" target="_blank" rel="noopener noreferrer">
+                <span class="site-chip-icon" aria-hidden="true">🌐</span>
+                <span class="site-chip-text">Jayesh Thakkar<small>jayeshthakkar.com</small></span>
+              </a>
+              <a class="site-chip" href="https://vibhutisharma.com" target="_blank" rel="noopener noreferrer">
+                <span class="site-chip-icon" aria-hidden="true">📈</span>
+                <span class="site-chip-text">Vibhuti Sharma<small>vibhutisharma.com</small></span>
+              </a>
+              <a class="site-chip" href="https://sharebizresearch.com" target="_blank" rel="noopener noreferrer">
+                <span class="site-chip-icon" aria-hidden="true">💼</span>
+                <span class="site-chip-text">Saiprasad Holkar<small>sharebizresearch.com</small></span>
+              </a>
+              <a class="site-chip" href="https://researchlyne.com" target="_blank" rel="noopener noreferrer">
+                <span class="site-chip-icon" aria-hidden="true">🔍</span>
+                <span class="site-chip-text">Amiteshwar Singh<small>researchlyne.com</small></span>
+              </a>
+              <a class="site-chip" href="https://mamandkavsecurities.com" target="_blank" rel="noopener noreferrer">
+                <span class="site-chip-icon" aria-hidden="true">🏦</span>
+                <span class="site-chip-text">Maman &amp; Kav<small>mamandkavsecurities.com</small></span>
+              </a>
             </div>
           </div>
         </div>
-        </div>
-
-        <p class="marquee-hint">Auto-scrolling websites · Hover to pause · Click any site to open</p>
-
-        <p class="portfolio-note reveal">
-          Need a regulatory-compliant website or landing page for your practice? Our developers build it —
-          and our compliance team reviews it for SEBI-aligned disclosures and best practices.
-        </p>
+        <p class="sites-hint">Hover to pause · Tap to open website</p>
       </div>
     </section>
 
@@ -2504,10 +2935,10 @@
       <div class="container">
         <div class="section-head center">
           <span class="section-label">Client Testimonials</span>
-          <h2>Our work speaks louder than promotions</h2>
+          <h2>Trusted by SEBI intermediaries</h2>
           <p>
-            Over the years, we have assisted numerous Research Analysts, Investment Advisers, and market
-            intermediaries. The trust placed in us by our clients remains our greatest achievement.
+            Hear from Research Analysts and market professionals who chose CompliTech for registration,
+            compliance, and technology support — including leading creators like Jayesh Thakkar.
           </p>
         </div>
 
@@ -2515,147 +2946,179 @@
           <strong>18+</strong> registrations done — and more coming
         </div>
 
-        <div class="marquee-wrap testimonial-marquee reveal">
-          <div class="marquee-track" id="testimonialTrack">
-            <div class="marquee-group" id="testimonialGroup">
-              <article class="testimonial">
-                <div class="quote-mark" aria-hidden="true">“</div>
-                <blockquote>
-                  <p>
-                    I approached CompliTech Solutions for my compliance requirements, and the experience has
-                    been exceptional. Their team delivers seamless, efficient, and highly professional services.
-                  </p>
-                  <p>
-                    The IT team handled my website and technical aspects with remarkable ease. SEBI compliances
-                    have never felt like a burden.
-                  </p>
-                </blockquote>
-                <div class="person">
-                  <div class="avatar a1" aria-hidden="true">JT</div>
-                  <div>
-                    <strong>Jayesh Thakkar</strong>
-                    <span>YouTuber &amp; Research Analyst · 27,000+ subscribers</span>
-                    <a class="site-link" href="https://jayeshthakkar.com" target="_blank" rel="noopener noreferrer">jayeshthakkar.com</a>
-                  </div>
-                </div>
-              </article>
-
-              <article class="testimonial">
-                <div class="quote-mark" aria-hidden="true">“</div>
-                <blockquote>
-                  <p>
-                    My experience was completely hassle-free from start to finish. The registration process was
-                    handled so smoothly that I never had to worry about the complexities involved.
-                  </p>
-                  <p>
-                    The team was always available, guided me at every stage, and managed all documentation and filings.
-                  </p>
-                </blockquote>
-                <div class="person">
-                  <div class="avatar a2" aria-hidden="true">RP</div>
-                  <div>
-                    <strong>Ramesh Pal</strong>
-                    <span>Recently Registered SEBI Intermediary</span>
-                  </div>
-                </div>
-              </article>
-
-              <article class="testimonial">
-                <div class="quote-mark" aria-hidden="true">“</div>
-                <blockquote>
-                  <p>
-                    The registration process was incredibly smooth. Before I even received my certificate, they had
-                    already established the compliance framework and operational processes.
-                  </p>
-                  <p>I could onboard clients immediately — no last-minute rush, no compliance concerns.</p>
-                </blockquote>
-                <div class="person">
-                  <div class="avatar a3" aria-hidden="true">VS</div>
-                  <div>
-                    <strong>Vibhuti Sharma</strong>
-                    <span>SEBI Registered Research Analyst</span>
-                    <a class="site-link" href="https://vibhutisharma.com" target="_blank" rel="noopener noreferrer">vibhutisharma.com</a>
-                  </div>
-                </div>
-              </article>
-
-              <article class="testimonial">
-                <div class="quote-mark" aria-hidden="true">“</div>
-                <blockquote>
-                  <p>
-                    CompliTech made the SEBI registration journey clearer and more structured than I expected.
-                    They prepared documentation carefully and stayed on top of follow-ups.
-                  </p>
-                  <p>Their compliance guidance was practical and business-friendly throughout.</p>
-                </blockquote>
-                <div class="person">
-                  <div class="avatar a4" aria-hidden="true">SS</div>
-                  <div>
-                    <strong>Shahnawaz Sheikh</strong>
-                    <span>SEBI Registered Intermediary</span>
-                  </div>
-                </div>
-              </article>
-
-              <article class="testimonial">
-                <div class="quote-mark" aria-hidden="true">“</div>
-                <blockquote>
-                  <p>
-                    They handled my registration with complete ownership — paperwork, filings, clarifications,
-                    and timelines were all managed professionally.
-                  </p>
-                  <p>Attention to detail and speed of response stood out. I could focus on building my practice.</p>
-                </blockquote>
-                <div class="person">
-                  <div class="avatar a5" aria-hidden="true">SH</div>
-                  <div>
-                    <strong>Saiprasad Holkar</strong>
-                    <span>SEBI Registered Intermediary</span>
-                    <a class="site-link" href="https://sharebizresearch.com" target="_blank" rel="noopener noreferrer">sharebizresearch.com</a>
-                  </div>
-                </div>
-              </article>
-
-              <article class="testimonial">
-                <div class="quote-mark" aria-hidden="true">“</div>
-                <blockquote>
-                  <p>
-                    Partnering with CompliTech was one of the best decisions for my registration and compliance setup.
-                    The team was knowledgeable, responsive, and extremely organized.
-                  </p>
-                  <p>They took ownership of documentation and filings and always communicated next steps clearly.</p>
-                </blockquote>
-                <div class="person">
-                  <div class="avatar a6" aria-hidden="true">AS</div>
-                  <div>
-                    <strong>Amiteshwar Singh</strong>
-                    <span>SEBI Registered Intermediary</span>
-                    <a class="site-link" href="https://researchlyne.com" target="_blank" rel="noopener noreferrer">researchlyne.com</a>
-                  </div>
-                </div>
-              </article>
+        <!-- Featured: Jayesh Thakkar -->
+        <article class="jayesh-feature reveal">
+          <div class="jayesh-feature-inner">
+            <div class="jayesh-feature-top">
+              <span class="jayesh-badge">★ Featured client · Jayesh Thakkar</span>
+              <div class="stars" aria-label="5 star rating">★★★★★</div>
+            </div>
+            <div class="quote-mark" aria-hidden="true">“</div>
+            <blockquote>
+              <p>
+                I approached CompliTech Solutions for my compliance requirements, and the experience has been
+                exceptional. Their team delivers seamless, efficient, and highly professional services.
+              </p>
+              <p>
+                The IT team handled my website, social media requirements, and other technical aspects related to
+                my practice with remarkable ease and professionalism. Everything was managed smoothly and on time.
+              </p>
+              <p>
+                What impresses me the most is their compliance support. Their team takes care of my regulatory
+                filings so efficiently that I hardly have to think about them. SEBI compliances have never felt
+                like a burden because the team manages everything in a structured and hassle-free manner.
+              </p>
+              <p>
+                I highly appreciate their professionalism, responsiveness, and commitment to delivering quality services.
+              </p>
+            </blockquote>
+            <div class="person">
+              <div class="avatar a1" aria-hidden="true">JT</div>
+              <div>
+                <strong>Jayesh Thakkar</strong>
+                <span>YouTuber &amp; Research Analyst · 27,000+ subscribers</span>
+                <a class="site-link" href="https://jayeshthakkar.com" target="_blank" rel="noopener noreferrer">jayeshthakkar.com</a>
+              </div>
             </div>
           </div>
-        </div>
-        <p class="marquee-hint">Auto-scrolling reviews · Hover to pause</p>
+        </article>
 
-        <div class="marquee-wrap logo-ticker reveal" style="margin-top: 2rem;">
-          <div class="marquee-track reverse">
-            <div class="marquee-group">
-              <a class="logo-chip" href="https://jayeshthakkar.com" target="_blank" rel="noopener noreferrer"><i></i>jayeshthakkar.com</a>
-              <a class="logo-chip" href="https://sharebizresearch.com" target="_blank" rel="noopener noreferrer"><i></i>sharebizresearch.com</a>
-              <a class="logo-chip" href="https://vibhutisharma.com" target="_blank" rel="noopener noreferrer"><i></i>vibhutisharma.com</a>
-              <a class="logo-chip" href="https://researchlyne.com" target="_blank" rel="noopener noreferrer"><i></i>researchlyne.com</a>
-              <a class="logo-chip" href="https://mamandkavsecurities.com" target="_blank" rel="noopener noreferrer"><i></i>mamandkavsecurities.com</a>
-            </div>
-            <div class="marquee-group" aria-hidden="true">
-              <a class="logo-chip" href="https://jayeshthakkar.com" target="_blank" rel="noopener noreferrer" tabindex="-1"><i></i>jayeshthakkar.com</a>
-              <a class="logo-chip" href="https://sharebizresearch.com" target="_blank" rel="noopener noreferrer" tabindex="-1"><i></i>sharebizresearch.com</a>
-              <a class="logo-chip" href="https://vibhutisharma.com" target="_blank" rel="noopener noreferrer" tabindex="-1"><i></i>vibhutisharma.com</a>
-              <a class="logo-chip" href="https://researchlyne.com" target="_blank" rel="noopener noreferrer" tabindex="-1"><i></i>researchlyne.com</a>
-              <a class="logo-chip" href="https://mamandkavsecurities.com" target="_blank" rel="noopener noreferrer" tabindex="-1"><i></i>mamandkavsecurities.com</a>
+        <p class="more-reviews-label reveal">More client reviews</p>
+
+        <div class="review-slider reveal" id="reviewSlider">
+          <div class="review-viewport">
+            <div class="review-track" id="reviewTrack">
+              <div class="review-slide">
+                <article class="review-card">
+                  <div class="review-top">
+                    <div class="stars" aria-label="5 star rating">★★★★★</div>
+                    <span class="review-chip">Verified client</span>
+                  </div>
+                  <div class="quote-mark" aria-hidden="true">“</div>
+                  <blockquote>
+                    <p>
+                      The registration process was incredibly smooth. Before I even received my certificate, they had
+                      already established the compliance framework and operational processes.
+                    </p>
+                    <p>I could onboard clients immediately — no last-minute rush, no compliance concerns.</p>
+                  </blockquote>
+                  <div class="person">
+                    <div class="avatar a3" aria-hidden="true">VS</div>
+                    <div>
+                      <strong>Vibhuti Sharma</strong>
+                      <span>SEBI Registered Research Analyst</span>
+                      <a class="site-link" href="https://vibhutisharma.com" target="_blank" rel="noopener noreferrer">vibhutisharma.com</a>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <div class="review-slide">
+                <article class="review-card">
+                  <div class="review-top">
+                    <div class="stars" aria-label="5 star rating">★★★★★</div>
+                    <span class="review-chip">Verified client</span>
+                  </div>
+                  <div class="quote-mark" aria-hidden="true">“</div>
+                  <blockquote>
+                    <p>
+                      My experience was completely hassle-free from start to finish. The registration process was
+                      handled so smoothly that I never had to worry about the complexities involved.
+                    </p>
+                    <p>The team guided me at every stage and managed all documentation and filings.</p>
+                  </blockquote>
+                  <div class="person">
+                    <div class="avatar a2" aria-hidden="true">RP</div>
+                    <div>
+                      <strong>Ramesh Pal</strong>
+                      <span>Recently Registered SEBI Intermediary</span>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <div class="review-slide">
+                <article class="review-card">
+                  <div class="review-top">
+                    <div class="stars" aria-label="5 star rating">★★★★★</div>
+                    <span class="review-chip">Verified client</span>
+                  </div>
+                  <div class="quote-mark" aria-hidden="true">“</div>
+                  <blockquote>
+                    <p>
+                      They handled my registration with complete ownership — paperwork, filings, clarifications,
+                      and timelines were all managed professionally.
+                    </p>
+                    <p>Attention to detail and speed of response stood out. I could focus on building my practice.</p>
+                  </blockquote>
+                  <div class="person">
+                    <div class="avatar a5" aria-hidden="true">SH</div>
+                    <div>
+                      <strong>Saiprasad Holkar</strong>
+                      <span>SEBI Registered Intermediary</span>
+                      <a class="site-link" href="https://sharebizresearch.com" target="_blank" rel="noopener noreferrer">sharebizresearch.com</a>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <div class="review-slide">
+                <article class="review-card">
+                  <div class="review-top">
+                    <div class="stars" aria-label="5 star rating">★★★★★</div>
+                    <span class="review-chip">Verified client</span>
+                  </div>
+                  <div class="quote-mark" aria-hidden="true">“</div>
+                  <blockquote>
+                    <p>
+                      Partnering with CompliTech was one of the best decisions for my registration and compliance setup.
+                      The team was knowledgeable, responsive, and extremely organized.
+                    </p>
+                    <p>They took ownership of documentation and filings and always communicated next steps clearly.</p>
+                  </blockquote>
+                  <div class="person">
+                    <div class="avatar a6" aria-hidden="true">AS</div>
+                    <div>
+                      <strong>Amiteshwar Singh</strong>
+                      <span>SEBI Registered Intermediary</span>
+                      <a class="site-link" href="https://researchlyne.com" target="_blank" rel="noopener noreferrer">researchlyne.com</a>
+                    </div>
+                  </div>
+                </article>
+              </div>
+
+              <div class="review-slide">
+                <article class="review-card">
+                  <div class="review-top">
+                    <div class="stars" aria-label="5 star rating">★★★★★</div>
+                    <span class="review-chip">Verified client</span>
+                  </div>
+                  <div class="quote-mark" aria-hidden="true">“</div>
+                  <blockquote>
+                    <p>
+                      CompliTech made the SEBI registration journey clearer and more structured than I expected.
+                      They prepared documentation carefully and stayed on top of follow-ups.
+                    </p>
+                    <p>Their compliance guidance was practical and business-friendly throughout.</p>
+                  </blockquote>
+                  <div class="person">
+                    <div class="avatar a4" aria-hidden="true">SS</div>
+                    <div>
+                      <strong>Shahnawaz Sheikh</strong>
+                      <span>SEBI Registered Intermediary</span>
+                    </div>
+                  </div>
+                </article>
+              </div>
             </div>
           </div>
+
+          <div class="review-controls">
+            <button type="button" class="review-btn" id="reviewPrev" aria-label="Previous review">‹</button>
+            <div class="review-dots" id="reviewDots" role="tablist" aria-label="Review slides"></div>
+            <button type="button" class="review-btn" id="reviewNext" aria-label="Next review">›</button>
+          </div>
+          <p class="review-count" id="reviewCount">1 / 6</p>
         </div>
       </div>
     </section>
@@ -2814,6 +3277,7 @@
     const header = document.getElementById("header");
     const menuToggle = document.getElementById("menuToggle");
     const navLinks = document.getElementById("navLinks");
+    const menuBackdrop = document.getElementById("menuBackdrop");
     const contactForm = document.getElementById("contactForm");
     const formSuccess = document.getElementById("formSuccess");
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -2821,19 +3285,39 @@
     document.getElementById("year").textContent = new Date().getFullYear();
 
     window.addEventListener("scroll", () => {
-      header.classList.toggle("scrolled", window.scrollY > 12);
+      if (!header.classList.contains("menu-open")) {
+        header.classList.toggle("scrolled", window.scrollY > 12);
+      }
+    }, { passive: true });
+
+    function setMenuOpen(open) {
+      navLinks.classList.toggle("open", open);
+      header.classList.toggle("menu-open", open);
+      document.body.classList.toggle("menu-open", open);
+      menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      menuToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      if (menuBackdrop) {
+        menuBackdrop.hidden = !open;
+        menuBackdrop.classList.toggle("show", open);
+      }
+    }
+
+    menuToggle.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      setMenuOpen(!navLinks.classList.contains("open"));
     });
 
-    menuToggle.addEventListener("click", () => {
-      const open = navLinks.classList.toggle("open");
-      menuToggle.setAttribute("aria-expanded", open ? "true" : "false");
-    });
+    if (menuBackdrop) {
+      menuBackdrop.addEventListener("click", () => setMenuOpen(false));
+    }
 
     navLinks.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => {
-        navLinks.classList.remove("open");
-        menuToggle.setAttribute("aria-expanded", "false");
-      });
+      link.addEventListener("click", () => setMenuOpen(false));
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") setMenuOpen(false);
     });
 
     contactForm.addEventListener("submit", (e) => {
@@ -2858,23 +3342,101 @@
       formSuccess.classList.add("show");
     });
 
-    // Duplicate marquee groups for seamless infinite scroll
-    function duplicateMarquee(groupId, trackId) {
-      const group = document.getElementById(groupId);
-      const track = document.getElementById(trackId);
+    // Duplicate website cards for seamless marquee loop
+    (function initSitesMarquee() {
+      const group = document.getElementById("sitesGroup");
+      const track = document.getElementById("sitesTrack");
       if (!group || !track) return;
       const clone = group.cloneNode(true);
       clone.removeAttribute("id");
       clone.setAttribute("aria-hidden", "true");
       clone.querySelectorAll("a").forEach((a) => a.setAttribute("tabindex", "-1"));
       track.appendChild(clone);
-    }
+    })();
 
-    duplicateMarquee("testimonialGroup", "testimonialTrack");
-    duplicateMarquee("portfolioGroup1", "portfolioTrack1");
+    // Review slider
+    (function initReviewSlider() {
+      const track = document.getElementById("reviewTrack");
+      const prevBtn = document.getElementById("reviewPrev");
+      const nextBtn = document.getElementById("reviewNext");
+      const dotsWrap = document.getElementById("reviewDots");
+      const countEl = document.getElementById("reviewCount");
+      const slider = document.getElementById("reviewSlider");
+      if (!track || !prevBtn || !nextBtn || !dotsWrap) return;
+
+      const slides = Array.from(track.querySelectorAll(".review-slide"));
+      const total = slides.length;
+      let index = 0;
+      let timer = null;
+
+      slides.forEach((_, i) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "review-dot" + (i === 0 ? " active" : "");
+        dot.setAttribute("aria-label", "Go to review " + (i + 1));
+        dot.addEventListener("click", () => goTo(i));
+        dotsWrap.appendChild(dot);
+      });
+
+      const dots = Array.from(dotsWrap.querySelectorAll(".review-dot"));
+
+      function render() {
+        track.style.transform = "translateX(-" + index * 100 + "%)";
+        dots.forEach((d, i) => d.classList.toggle("active", i === index));
+        if (countEl) countEl.textContent = index + 1 + " / " + total;
+      }
+
+      function goTo(i) {
+        index = (i + total) % total;
+        render();
+        restartAuto();
+      }
+
+      function next() { goTo(index + 1); }
+      function prev() { goTo(index - 1); }
+
+      function restartAuto() {
+        if (timer) clearInterval(timer);
+        if (reduceMotion) return;
+        timer = setInterval(next, 6500);
+      }
+
+      prevBtn.addEventListener("click", prev);
+      nextBtn.addEventListener("click", next);
+
+      // Swipe support
+      let startX = 0;
+      let deltaX = 0;
+      track.addEventListener("touchstart", (e) => {
+        startX = e.touches[0].clientX;
+        deltaX = 0;
+        if (timer) clearInterval(timer);
+      }, { passive: true });
+
+      track.addEventListener("touchmove", (e) => {
+        deltaX = e.touches[0].clientX - startX;
+      }, { passive: true });
+
+      track.addEventListener("touchend", () => {
+        if (Math.abs(deltaX) > 45) {
+          if (deltaX < 0) next();
+          else prev();
+        } else {
+          restartAuto();
+        }
+      });
+
+      if (slider) {
+        slider.addEventListener("mouseenter", () => { if (timer) clearInterval(timer); });
+        slider.addEventListener("mouseleave", restartAuto);
+      }
+
+      render();
+      restartAuto();
+    })();
 
     // Scroll-reveal animations
-    const revealEls = document.querySelectorAll(".reveal, .team-card, .offer-card, .about-highlight, .contact-info, .contact-form-wrap, .section-head");
+    const revealEls = document.querySelectorAll(".reveal, .team-card, .offer-card, .about-highlight, .contact-info, .contact-form-wrap, .section-head, .review-slider, .sites-marquee, .jayesh-feature");
     revealEls.forEach((el) => {
       if (!el.classList.contains("reveal")) el.classList.add("reveal");
     });
