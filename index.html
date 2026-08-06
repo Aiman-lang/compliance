@@ -3446,16 +3446,296 @@
         opacity: 1;
       }
     }
+
+/* ===== NEW ISOMETRIC LUXURY 3D LOOK ===== */
+    .gold-haze {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 55% 40% at 12% 18%, rgba(240, 216, 120, 0.3), transparent 55%),
+        radial-gradient(ellipse 45% 35% at 88% 12%, rgba(212, 175, 55, 0.22), transparent 50%),
+        radial-gradient(ellipse 40% 40% at 70% 85%, rgba(184, 134, 11, 0.14), transparent 55%);
+      filter: blur(22px);
+      animation: hazeDrift 16s ease-in-out infinite alternate;
+    }
+    @keyframes hazeDrift {
+      from { transform: scale(1) translate(0, 0); }
+      to { transform: scale(1.06) translate(-1.5%, 1%); }
+    }
+
+    .iso-floor {
+      position: fixed;
+      left: -20%;
+      right: -20%;
+      bottom: -35%;
+      height: 85%;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(to right, rgba(212, 175, 55, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(184, 134, 11, 0.07) 1px, transparent 1px);
+      background-size: 64px 64px;
+      transform: perspective(900px) rotateX(68deg) scale(1.4);
+      transform-origin: center top;
+      mask-image: linear-gradient(to top, #000 10%, transparent 85%);
+      -webkit-mask-image: linear-gradient(to top, #000 10%, transparent 85%);
+      opacity: 0.8;
+    }
+    .iso-floor::after {
+      content: "";
+      position: absolute;
+      inset: 20% 30% 35%;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(240, 216, 120, 0.4), transparent 70%);
+      filter: blur(30px);
+      animation: floorGlow 8s ease-in-out infinite;
+    }
+    @keyframes floorGlow {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.15); }
+    }
+
+    .iso-stage {
+      position: absolute;
+      right: 4%;
+      top: 18%;
+      width: min(420px, 42vw);
+      height: 360px;
+      transform-style: preserve-3d;
+      transform: rotateX(18deg) rotateY(-28deg);
+      animation: stageFloat 9s ease-in-out infinite;
+      z-index: 2;
+    }
+    @keyframes stageFloat {
+      0%, 100% { transform: rotateX(18deg) rotateY(-28deg) translateY(0); }
+      50% { transform: rotateX(16deg) rotateY(-24deg) translateY(-14px); }
+    }
+
+    .iso-slab {
+      position: absolute;
+      left: 50%;
+      border-radius: 18px;
+      transform-style: preserve-3d;
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      box-shadow:
+        0 25px 50px rgba(20, 17, 13, 0.18),
+        0 0 40px rgba(212, 175, 55, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      overflow: hidden;
+    }
+    .iso-slab.s1 {
+      width: 260px; height: 150px;
+      margin-left: -130px;
+      top: 40px;
+      background: linear-gradient(145deg, rgba(255, 252, 247, 0.95), rgba(243, 229, 194, 0.8));
+      transform: translateZ(60px);
+    }
+    .iso-slab.s2 {
+      width: 220px; height: 120px;
+      margin-left: -80px;
+      top: 130px;
+      background: linear-gradient(155deg, #1f1a12 0%, #3d2e14 55%, #6b5216 100%);
+      transform: translateZ(20px) translateX(-20px);
+      border-color: rgba(240, 216, 120, 0.25);
+      box-shadow: 0 30px 55px rgba(20, 17, 13, 0.28), 0 0 30px rgba(212, 175, 55, 0.2);
+    }
+    .iso-slab.s3 {
+      width: 180px; height: 90px;
+      margin-left: -140px;
+      top: 210px;
+      background: linear-gradient(145deg, #f0d878, #d4af37 50%, #b8860b);
+      transform: translateZ(90px) translateX(40px);
+      box-shadow: 0 28px 50px rgba(184, 134, 11, 0.35);
+    }
+    .iso-slab .slab-label {
+      position: absolute;
+      left: 1rem; bottom: 0.85rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #14110d;
+      z-index: 2;
+    }
+    .iso-slab.s2 .slab-label { color: #f5e6a8; }
+    .iso-slab .slab-shine {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.5) 50%, transparent 65%);
+      animation: slabShine 5s ease-in-out infinite;
+    }
+    @keyframes slabShine {
+      0% { transform: translateX(-60%); opacity: 0; }
+      40% { opacity: 1; }
+      100% { transform: translateX(60%); opacity: 0; }
+    }
+
+    .orbit-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid rgba(212, 175, 55, 0.45);
+      box-shadow:
+        0 0 30px rgba(240, 216, 120, 0.25),
+        inset 0 0 30px rgba(212, 175, 55, 0.12);
+      opacity: 0.55;
+      animation: orbitSpin 20s linear infinite;
+      transform-style: preserve-3d;
+    }
+    .orbit-ring.r1 {
+      width: 280px; height: 280px;
+      left: 6%; top: 20%;
+      transform: rotateX(70deg);
+    }
+    .orbit-ring.r2 {
+      width: 180px; height: 180px;
+      right: 6%; bottom: 16%;
+      transform: rotateX(65deg) rotateZ(20deg);
+      animation-direction: reverse;
+      opacity: 0.4;
+    }
+    .orbit-ring.r3 {
+      width: 120px; height: 120px;
+      left: 40%; top: 10%;
+      transform: rotateX(60deg);
+      animation-duration: 14s;
+      opacity: 0.35;
+    }
+    @keyframes orbitSpin {
+      from { filter: hue-rotate(0deg); }
+      50% { filter: hue-rotate(8deg); }
+      to { filter: hue-rotate(0deg); }
+    }
+    .orbit-ring.r1 { animation: orbitSpin 20s linear infinite, ringTilt1 12s ease-in-out infinite; }
+    .orbit-ring.r2 { animation: orbitSpin 16s linear infinite reverse, ringTilt2 10s ease-in-out infinite; }
+    @keyframes ringTilt1 {
+      0%, 100% { transform: rotateX(70deg) rotateZ(0deg); }
+      50% { transform: rotateX(75deg) rotateZ(25deg); }
+    }
+    @keyframes ringTilt2 {
+      0%, 100% { transform: rotateX(65deg) rotateZ(20deg); }
+      50% { transform: rotateX(70deg) rotateZ(-10deg); }
+    }
+
+    .gold-sphere {
+      position: absolute;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 32% 28%, #fff8e1 0%, #f0d878 25%, #d4af37 55%, #8b6914 100%);
+      box-shadow:
+        0 20px 40px rgba(184, 134, 11, 0.4),
+        0 0 30px rgba(240, 216, 120, 0.35),
+        inset -8px -10px 18px rgba(20, 17, 13, 0.35);
+      animation: sphereBob 7s ease-in-out infinite;
+    }
+    .gold-sphere.g1 { width: 56px; height: 56px; left: 10%; bottom: 20%; }
+    .gold-sphere.g2 { width: 34px; height: 34px; right: 16%; top: 26%; animation-delay: -2.5s; }
+    .gold-sphere.g3 { width: 22px; height: 22px; left: 46%; bottom: 28%; animation-delay: -4s; }
+    @keyframes sphereBob {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-22px) scale(1.08); }
+    }
+
+    .ribbon-3d {
+      position: absolute;
+      width: 140px;
+      height: 16px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, transparent, #d4af37, #f0d878, #d4af37, transparent);
+      opacity: 0.55;
+      box-shadow: 0 10px 24px rgba(212, 175, 55, 0.25);
+      animation: ribbonWave 10s ease-in-out infinite;
+    }
+    .ribbon-3d.b1 { top: 34%; left: 4%; transform: rotate(-18deg); }
+    .ribbon-3d.b2 { bottom: 26%; right: 10%; width: 100px; animation-name: ribbonWave2; }
+    @keyframes ribbonWave {
+      0%, 100% { transform: rotate(-18deg) translateX(0); opacity: 0.4; }
+      50% { transform: rotate(-12deg) translateX(12px); opacity: 0.7; }
+    }
+    @keyframes ribbonWave2 {
+      0%, 100% { transform: rotate(14deg) translateX(0); opacity: 0.4; }
+      50% { transform: rotate(20deg) translateX(-10px); opacity: 0.7; }
+    }
+
+    /* Extruded gold card depth */
+    body.scene-3d .process-card,
+    body.scene-3d .why-card,
+    body.scene-3d .offer-card,
+    body.scene-3d .team-card,
+    body.scene-3d .review-card,
+    body.scene-3d .about-highlight,
+    body.scene-3d .contact-form-wrap {
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.95) inset,
+        0 18px 40px rgba(20, 17, 13, 0.08),
+        10px 10px 0 rgba(212, 175, 55, 0.14),
+        18px 18px 0 rgba(184, 134, 11, 0.07) !important;
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease !important;
+    }
+    body.scene-3d .process-card:hover,
+    body.scene-3d .why-card:hover,
+    body.scene-3d .offer-card:hover,
+    body.scene-3d .team-card:hover,
+    body.scene-3d .review-card:hover {
+      transform: translateY(-12px) translateX(-4px) !important;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.95) inset,
+        0 28px 55px rgba(20, 17, 13, 0.14),
+        14px 14px 0 rgba(212, 175, 55, 0.2),
+        26px 26px 0 rgba(184, 134, 11, 0.1),
+        0 0 40px rgba(240, 216, 120, 0.15) !important;
+    }
+
+    body.scene-3d .hero-card {
+      box-shadow:
+        0 40px 80px rgba(20, 17, 13, 0.35),
+        16px 16px 0 rgba(212, 175, 55, 0.22),
+        28px 28px 0 rgba(184, 134, 11, 0.1),
+        0 0 50px rgba(212, 175, 55, 0.2) !important;
+    }
+
+    body.scene-3d .trust-bar-inner,
+    body.scene-3d .stat {
+      box-shadow:
+        0 16px 36px rgba(20, 17, 13, 0.07),
+        8px 8px 0 rgba(212, 175, 55, 0.12) !important;
+    }
+
+    body.scene-3d .cta-box {
+      box-shadow:
+        0 30px 70px rgba(20, 17, 13, 0.22),
+        14px 14px 0 rgba(212, 175, 55, 0.15),
+        0 0 50px rgba(212, 175, 55, 0.12) !important;
+    }
+
+    /* Hide old shape classes if still present */
+    .shape-cube, .shape-pyramid, .shape-chip, .shape-float-card,
+    .css-cube, .depth-grid, .aurora, .scanline { display: none !important; }
+
+    @media (max-width: 900px) {
+      .iso-stage { display: none; }
+      .orbit-ring.r3, .ribbon-3d, .gold-sphere.g3 { display: none; }
+      .orbit-ring.r1 { width: 170px; height: 170px; left: -4%; }
+      .iso-floor { opacity: 0.4; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .iso-stage, .orbit-ring, .gold-sphere, .ribbon-3d, .gold-haze, .iso-floor::after {
+        animation: none !important;
+      }
+      .iso-floor, .gold-haze { display: none !important; }
+    }
+
   </style>
 </head>
 <body class="scene-3d">
-  <canvas id="webgl-bg" aria-hidden="true"></canvas>
-  <div class="aurora" aria-hidden="true"></div>
-  <div class="depth-grid" aria-hidden="true"></div>
-  <div class="scanline" aria-hidden="true"></div>
+    <canvas id="webgl-bg" aria-hidden="true"></canvas>
+  <div class="gold-haze" aria-hidden="true"></div>
+  <div class="iso-floor" aria-hidden="true"></div>
   <div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
   <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
-  <div class="menu-backdrop" id="menuBackdrop" hidden></div>
+<div class="menu-backdrop" id="menuBackdrop" hidden></div>
 
   <header class="header" id="header">
     <div class="container nav">
@@ -3490,14 +3770,22 @@
     <section class="hero">
       <div class="hero-orb o1" aria-hidden="true"></div>
       <div class="hero-orb o2" aria-hidden="true"></div>
-      <div class="hero-3d-stage" aria-hidden="true">
-        <div class="shape-3d shape-cube"><div class="face"></div></div>
-        <div class="shape-3d shape-ring"></div>
-        <div class="shape-3d shape-pyramid"></div>
-        <div class="shape-3d shape-orb-3d"></div>
-        <div class="shape-3d shape-chip"></div>
+            <div class="hero-3d-stage" aria-hidden="true">
+        <div class="orbit-ring r1"></div>
+        <div class="orbit-ring r2"></div>
+        <div class="orbit-ring r3"></div>
+        <div class="gold-sphere g1"></div>
+        <div class="gold-sphere g2"></div>
+        <div class="gold-sphere g3"></div>
+        <div class="ribbon-3d b1"></div>
+        <div class="ribbon-3d b2"></div>
+        <div class="iso-stage">
+          <div class="iso-slab s1"><span class="slab-shine"></span><span class="slab-label">SEBI READY</span></div>
+          <div class="iso-slab s2"><span class="slab-shine"></span><span class="slab-label">COMPLIANCE</span></div>
+          <div class="iso-slab s3"><span class="slab-shine"></span><span class="slab-label">PREMIUM TECH</span></div>
+        </div>
       </div>
-      <div class="container hero-grid">
+<div class="container hero-grid">
         <div class="hero-copy parallax-layer" data-depth="0.04">
           <div class="eyebrow">Trusted by 50+ SEBI Intermediaries · More Coming</div>
           <h1>Get Your <em>SEBI Registrations &amp; Compliances</em> Done Without the Stress</h1>
@@ -4651,30 +4939,19 @@
       });
     }
 
-    /* ========== 3D INTERACTIONS ========== */
+    /* ========== ISOMETRIC 3D INTERACTIONS ========== */
     (function init3DExperience() {
       if (reduceMotion) return;
-
       const pointerFine = window.matchMedia("(pointer: fine)").matches;
       const isMobile = window.matchMedia("(max-width: 900px)").matches;
       const cursorGlow = document.getElementById("cursorGlow");
+      const cursorRing = document.getElementById("cursorRing");
 
-      // Mouse-tilt cards
       const tiltSelector = [
-        ".process-card",
-        ".why-card",
-        ".offer-card",
-        ".team-card",
-        ".hero-card",
-        ".review-card",
-        ".jayesh-feature",
-        ".about-highlight",
-        ".contact-form-wrap",
-        ".contact-info",
-        ".stat",
-        ".site-chip"
+        ".process-card", ".why-card", ".offer-card", ".team-card",
+        ".hero-card", ".review-card", ".jayesh-feature",
+        ".about-highlight", ".contact-form-wrap", ".contact-info", ".stat"
       ].join(",");
-
       const tiltEls = Array.from(document.querySelectorAll(tiltSelector));
 
       function resetTilt(el) {
@@ -4686,9 +4963,8 @@
         document.body.classList.add("has-pointer");
 
         tiltEls.forEach((el) => {
-          const maxTilt = el.classList.contains("hero-card") ? 10 : 8;
-          const lift = el.classList.contains("hero-card") ? 18 : 12;
-
+          const maxTilt = el.classList.contains("hero-card") ? 12 : 7;
+          const lift = el.classList.contains("hero-card") ? 22 : 14;
           el.addEventListener("mousemove", (e) => {
             const rect = el.getBoundingClientRect();
             const x = (e.clientX - rect.left) / rect.width;
@@ -4697,21 +4973,13 @@
             const rotX = (0.5 - y) * maxTilt * 2;
             el.classList.add("is-tilting");
             el.style.transform =
-              "perspective(900px) rotateX(" + rotX.toFixed(2) + "deg) rotateY(" +
-              rotY.toFixed(2) + "deg) translateZ(" + lift + "px)";
+              "perspective(1000px) rotateX(" + rotX.toFixed(2) + "deg) rotateY(" +
+              rotY.toFixed(2) + "deg) translateZ(" + lift + "px) translateY(-6px)";
           });
-
           el.addEventListener("mouseleave", () => resetTilt(el));
         });
 
-        // Cursor glow + parallax layers
-        let mx = 0.5;
-        let my = 0.5;
-        let gx = window.innerWidth / 2;
-        let gy = window.innerHeight / 2;
-        let tgx = gx;
-        let tgy = gy;
-
+        let mx = 0.5, my = 0.5, gx = window.innerWidth / 2, gy = window.innerHeight / 2, tgx = gx, tgy = gy;
         window.addEventListener("mousemove", (e) => {
           mx = e.clientX / window.innerWidth;
           my = e.clientY / window.innerHeight;
@@ -4720,204 +4988,150 @@
 
           document.querySelectorAll(".parallax-layer").forEach((layer) => {
             const depth = Number(layer.dataset.depth || 0.05);
-            const x = (mx - 0.5) * depth * 120;
-            const y = (my - 0.5) * depth * 80;
-            if (!layer.classList.contains("is-tilting") && !layer.matches(":hover")) {
-              // only apply soft parallax when not actively tilting hero card
-            }
+            const x = (mx - 0.5) * depth * 100;
+            const y = (my - 0.5) * depth * 70;
             if (layer.classList.contains("hero-copy")) {
               layer.style.transform = "translate3d(" + x.toFixed(1) + "px," + y.toFixed(1) + "px,0)";
             } else if (layer.classList.contains("hero-card") && !layer.classList.contains("is-tilting")) {
               layer.style.transform =
-                "translateZ(40px) rotateY(" + (-6 + (mx - 0.5) * 8).toFixed(2) +
-                "deg) rotateX(" + (4 + (0.5 - my) * 6).toFixed(2) + "deg) translate3d(" +
-                (x * 0.6).toFixed(1) + "px," + (y * 0.6).toFixed(1) + "px,0)";
+                "rotateY(" + (-8 + (mx - 0.5) * 10).toFixed(2) + "deg) rotateX(" +
+                (4 + (0.5 - my) * 6).toFixed(2) + "deg) translateZ(30px) translate3d(" +
+                (x * 0.5).toFixed(1) + "px," + (y * 0.5).toFixed(1) + "px,0)";
             }
           });
 
-          // Move floating CSS shapes slightly
-          const stage = document.querySelector(".hero-3d-stage");
+          const stage = document.querySelector(".iso-stage");
           if (stage) {
             stage.style.transform =
-              "translate3d(" + ((mx - 0.5) * 24).toFixed(1) + "px," + ((my - 0.5) * 16).toFixed(1) + "px,0)";
+              "rotateX(" + (18 + (my - 0.5) * 8).toFixed(1) + "deg) rotateY(" +
+              (-28 + (mx - 0.5) * 16).toFixed(1) + "deg) translateY(-4px)";
           }
         }, { passive: true });
 
-        function glowLoop() {
+        document.querySelectorAll("a, button, .btn, .site-chip").forEach((el) => {
+          el.addEventListener("mouseenter", () => cursorRing && cursorRing.classList.add("hovering"));
+          el.addEventListener("mouseleave", () => cursorRing && cursorRing.classList.remove("hovering"));
+        });
+
+        (function glowLoop() {
           gx += (tgx - gx) * 0.12;
           gy += (tgy - gy) * 0.12;
-          if (cursorGlow) {
-            cursorGlow.style.left = gx + "px";
-            cursorGlow.style.top = gy + "px";
-          }
+          if (cursorGlow) { cursorGlow.style.left = gx + "px"; cursorGlow.style.top = gy + "px"; }
+          if (cursorRing) { cursorRing.style.left = gx + "px"; cursorRing.style.top = gy + "px"; }
           requestAnimationFrame(glowLoop);
-        }
-        glowLoop();
-      }
-
-      // Scroll depth: slight scale on sections
-      if ("IntersectionObserver" in window) {
-        const depthObs = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.style.transform = entry.target.style.transform || "";
-              }
-            });
-          },
-          { threshold: 0.15 }
-        );
-        document.querySelectorAll("section").forEach((s) => depthObs.observe(s));
+        })();
       }
     })();
 
-    /* ========== THREE.JS 3D BACKGROUND ========== */
+    /* ========== THREE.JS — ORBITING GOLD RINGS ========== */
     (function initWebGLScene() {
       if (reduceMotion) return;
       const canvas = document.getElementById("webgl-bg");
       if (!canvas) return;
-
       const isMobile = window.matchMedia("(max-width: 900px)").matches;
       const script = document.createElement("script");
       script.src = "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js";
       script.async = true;
-      script.onload = () => {
+      script.onload = function () {
         if (typeof THREE === "undefined") return;
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-        camera.position.set(0, 0.2, 7.5);
+        const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 1.2, 9);
 
-        const renderer = new THREE.WebGLRenderer({
-          canvas,
-          alpha: true,
-          antialias: !isMobile,
-          powerPreference: "high-performance"
-        });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: !isMobile, powerPreference: "high-performance" });
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.4 : 2));
         renderer.setSize(window.innerWidth, window.innerHeight, false);
         renderer.setClearColor(0x000000, 0);
 
-        const group = new THREE.Group();
-        scene.add(group);
-
-        const ambient = new THREE.AmbientLight(0xffffff, 0.65);
-        scene.add(ambient);
-        const key = new THREE.DirectionalLight(0xe8c547, 1.1);
-        key.position.set(4, 6, 5);
+        scene.add(new THREE.AmbientLight(0xfff4d6, 0.7));
+        const key = new THREE.DirectionalLight(0xffe08a, 1.2);
+        key.position.set(5, 8, 4);
         scene.add(key);
-        const fill = new THREE.DirectionalLight(0xf0d878, 0.55);
-        fill.position.set(-5, -2, 3);
+        const fill = new THREE.DirectionalLight(0xd4af37, 0.5);
+        fill.position.set(-6, -2, 2);
         scene.add(fill);
 
-        const materials = [
-          new THREE.MeshPhysicalMaterial({
-            color: 0xd4af37,
-            metalness: 0.85,
-            roughness: 0.18,
-            transparent: true,
-            opacity: 0.7,
-            transmission: 0.08,
-            thickness: 0.5
-          }),
-          new THREE.MeshPhysicalMaterial({
-            color: 0xf0d878,
-            metalness: 0.75,
-            roughness: 0.22,
-            transparent: true,
-            opacity: 0.65
-          }),
-          new THREE.MeshPhysicalMaterial({
-            color: 0x1a1610,
-            metalness: 0.55,
-            roughness: 0.25,
-            transparent: true,
-            opacity: 0.5
-          }),
-          new THREE.MeshStandardMaterial({
-            color: 0xe8c547,
-            metalness: 0.9,
-            roughness: 0.2,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.45
-          })
-        ];
+        const root = new THREE.Group();
+        scene.add(root);
 
-        const shapes = [];
-        const count = isMobile ? 8 : 16;
-
-        function makeShape(i) {
-          let geo;
-          const roll = i % 5;
-          if (roll === 0) geo = new THREE.IcosahedronGeometry(0.45 + Math.random() * 0.25, 0);
-          else if (roll === 1) geo = new THREE.OctahedronGeometry(0.4 + Math.random() * 0.2, 0);
-          else if (roll === 2) geo = new THREE.TorusGeometry(0.32, 0.12, 12, 32);
-          else if (roll === 3) geo = new THREE.BoxGeometry(0.55, 0.55, 0.55);
-          else geo = new THREE.TetrahedronGeometry(0.45 + Math.random() * 0.2, 0);
-
-          const mesh = new THREE.Mesh(geo, materials[i % materials.length]);
-          mesh.position.set(
-            (Math.random() - 0.5) * 12,
-            (Math.random() - 0.5) * 7,
-            (Math.random() - 0.5) * 6 - 1
-          );
-          mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-          mesh.userData = {
-            speed: 0.002 + Math.random() * 0.006,
-            drift: 0.15 + Math.random() * 0.35,
-            phase: Math.random() * Math.PI * 2,
-            baseY: mesh.position.y
-          };
-          group.add(mesh);
-          shapes.push(mesh);
-        }
-
-        for (let i = 0; i < count; i++) makeShape(i);
-
-        // Soft particle field
-        const pCount = isMobile ? 80 : 180;
-        const pGeo = new THREE.BufferGeometry();
-        const positions = new Float32Array(pCount * 3);
-        for (let i = 0; i < pCount; i++) {
-          positions[i * 3] = (Math.random() - 0.5) * 16;
-          positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-          positions[i * 3 + 2] = (Math.random() - 0.5) * 8;
-        }
-        pGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-        const pMat = new THREE.PointsMaterial({
-          color: 0xd4af37,
-          size: 0.04,
-          transparent: true,
-          opacity: 0.65,
-          depthWrite: false
+        const goldMat = new THREE.MeshPhysicalMaterial({
+          color: 0xd4af37, metalness: 0.92, roughness: 0.16,
+          transparent: true, opacity: 0.75, emissive: 0x5c4518, emissiveIntensity: 0.15
         });
-        const points = new THREE.Points(pGeo, pMat);
+        const goldSoft = new THREE.MeshPhysicalMaterial({
+          color: 0xf0d878, metalness: 0.8, roughness: 0.22,
+          transparent: true, opacity: 0.55
+        });
+        const darkMat = new THREE.MeshStandardMaterial({
+          color: 0x1a1610, metalness: 0.6, roughness: 0.3,
+          transparent: true, opacity: 0.45
+        });
+        const wireMat = new THREE.MeshStandardMaterial({
+          color: 0xe8c547, metalness: 0.9, roughness: 0.25,
+          wireframe: true, transparent: true, opacity: 0.28
+        });
+
+        const animMeshes = [];
+        const ringCount = isMobile ? 3 : 5;
+        for (let i = 0; i < ringCount; i++) {
+          const radius = 1.2 + i * 0.55;
+          const geo = new THREE.TorusGeometry(radius, 0.035 + i * 0.008, 12, 80);
+          const mesh = new THREE.Mesh(geo, i % 2 === 0 ? goldMat : goldSoft);
+          mesh.rotation.x = Math.PI / 2.4 + i * 0.12;
+          mesh.rotation.z = i * 0.4;
+          mesh.userData = { kind: "ring", speed: 0.15 + i * 0.05 };
+          root.add(mesh);
+          animMeshes.push(mesh);
+        }
+
+        const spheres = [];
+        const sCount = isMobile ? 6 : 12;
+        for (let i = 0; i < sCount; i++) {
+          const geo = new THREE.SphereGeometry(0.08 + Math.random() * 0.12, 16, 16);
+          const mesh = new THREE.Mesh(geo, i % 3 === 0 ? goldSoft : goldMat);
+          const angle = (i / sCount) * Math.PI * 2;
+          const r = 2.2 + (i % 4) * 0.45;
+          mesh.userData = { kind: "sphere", angle: angle, r: r, y: (Math.random() - 0.5) * 2.5, speed: 0.25 + Math.random() * 0.35 };
+          mesh.position.set(Math.cos(angle) * r, mesh.userData.y, Math.sin(angle) * r);
+          root.add(mesh);
+          spheres.push(mesh);
+        }
+
+        for (let i = 0; i < (isMobile ? 3 : 6); i++) {
+          const geo = new THREE.IcosahedronGeometry(0.25 + Math.random() * 0.2, 0);
+          const mesh = new THREE.Mesh(geo, i % 2 ? wireMat : darkMat);
+          mesh.position.set((Math.random() - 0.5) * 8, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 5);
+          mesh.userData = { kind: "rock", rx: 0.004 + Math.random() * 0.008, ry: 0.004 + Math.random() * 0.008 };
+          root.add(mesh);
+          animMeshes.push(mesh);
+        }
+
+        const pCount = isMobile ? 100 : 220;
+        const pGeo = new THREE.BufferGeometry();
+        const pos = new Float32Array(pCount * 3);
+        for (let i = 0; i < pCount; i++) {
+          pos[i * 3] = (Math.random() - 0.5) * 18;
+          pos[i * 3 + 1] = (Math.random() - 0.5) * 12;
+          pos[i * 3 + 2] = (Math.random() - 0.5) * 10;
+        }
+        pGeo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+        const points = new THREE.Points(pGeo, new THREE.PointsMaterial({
+          color: 0xd4af37, size: 0.038, transparent: true, opacity: 0.6, depthWrite: false
+        }));
         scene.add(points);
 
-        let targetX = 0;
-        let targetY = 0;
-        let curX = 0;
-        let curY = 0;
-        let scrollY = 0;
-
-        window.addEventListener("mousemove", (e) => {
-          targetX = (e.clientX / window.innerWidth - 0.5) * 1.4;
-          targetY = (e.clientY / window.innerHeight - 0.5) * 0.9;
+        let targetX = 0, targetY = 0, curX = 0, curY = 0, scrollY = 0;
+        window.addEventListener("mousemove", function (e) {
+          targetX = (e.clientX / window.innerWidth - 0.5) * 1.6;
+          targetY = (e.clientY / window.innerHeight - 0.5) * 1.0;
         }, { passive: true });
-
-        window.addEventListener("scroll", () => {
-          scrollY = window.scrollY || 0;
-        }, { passive: true });
-
-        function onResize() {
-          const w = window.innerWidth;
-          const h = window.innerHeight;
-          camera.aspect = w / h;
+        window.addEventListener("scroll", function () { scrollY = window.scrollY || 0; }, { passive: true });
+        window.addEventListener("resize", function () {
+          camera.aspect = window.innerWidth / window.innerHeight;
           camera.updateProjectionMatrix();
-          renderer.setSize(w, h, false);
-        }
-        window.addEventListener("resize", onResize);
+          renderer.setSize(window.innerWidth, window.innerHeight, false);
+        });
 
         let raf = 0;
         function animate(t) {
@@ -4926,38 +5140,44 @@
           curX += (targetX - curX) * 0.04;
           curY += (targetY - curY) * 0.04;
 
-          camera.position.x = curX * 0.8;
-          camera.position.y = 0.2 - curY * 0.5 - Math.min(scrollY * 0.0008, 1.2);
+          camera.position.x = curX * 0.9;
+          camera.position.y = 1.2 - curY * 0.5 - Math.min(scrollY * 0.0006, 1);
           camera.lookAt(0, 0, 0);
 
-          group.rotation.y = time * 0.05 + curX * 0.15;
-          group.rotation.x = curY * 0.08;
-          points.rotation.y = time * 0.03;
+          root.rotation.y = time * 0.08 + curX * 0.12;
+          root.rotation.x = 0.15 + curY * 0.08;
+          points.rotation.y = time * 0.025;
 
-          shapes.forEach((mesh, i) => {
-            mesh.rotation.x += mesh.userData.speed;
-            mesh.rotation.y += mesh.userData.speed * 1.3;
-            mesh.position.y =
-              mesh.userData.baseY +
-              Math.sin(time * mesh.userData.drift + mesh.userData.phase) * 0.35;
+          animMeshes.forEach(function (mesh) {
+            if (mesh.userData.kind === "ring") {
+              mesh.rotation.z += mesh.userData.speed * 0.008;
+              mesh.rotation.x += 0.001;
+            } else if (mesh.userData.kind === "rock") {
+              mesh.rotation.x += mesh.userData.rx;
+              mesh.rotation.y += mesh.userData.ry;
+            }
+          });
+
+          spheres.forEach(function (mesh) {
+            mesh.userData.angle += mesh.userData.speed * 0.008;
+            mesh.position.x = Math.cos(mesh.userData.angle) * mesh.userData.r;
+            mesh.position.z = Math.sin(mesh.userData.angle) * mesh.userData.r;
+            mesh.position.y = mesh.userData.y + Math.sin(time + mesh.userData.angle) * 0.25;
           });
 
           renderer.render(scene, camera);
         }
         animate(0);
 
-        // Pause when tab hidden
-        document.addEventListener("visibilitychange", () => {
+        document.addEventListener("visibilitychange", function () {
           if (document.hidden) cancelAnimationFrame(raf);
           else animate(performance.now());
         });
       };
-      script.onerror = () => {
-        // CSS 3D still works without WebGL library
-        canvas.style.display = "none";
-      };
+      script.onerror = function () { canvas.style.display = "none"; };
       document.head.appendChild(script);
     })();
+
   </script>
 </body>
 </html>
