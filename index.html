@@ -342,8 +342,196 @@
     }
     .offer-footer span { color: var(--neon-soft); }
 
+    /* Accordion system (clean one-page expandables) */
+    .accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+    .acc-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--card);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+      transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+    }
+    .acc-item:hover { border-color: rgba(0,180,255,0.28); }
+    .acc-item.open {
+      border-color: var(--line-strong);
+      box-shadow: 0 0 36px rgba(0,180,255,0.1);
+      background: var(--card-hover);
+    }
+    .acc-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.15rem 1.25rem;
+      background: transparent;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      text-align: left;
+      font-family: var(--font);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .acc-trigger-main {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      min-width: 0;
+    }
+    .acc-icon {
+      width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+      display: grid; place-items: center; font-size: 1.1rem;
+      background: rgba(0,180,255,0.1); border: 1px solid rgba(0,180,255,0.2);
+    }
+    .acc-title {
+      display: block; font-size: 1.02rem; font-weight: 600; letter-spacing: -0.015em;
+    }
+    .acc-sub {
+      display: block; font-size: 0.82rem; color: var(--muted); font-weight: 500; margin-top: 0.15rem;
+    }
+    .acc-chevron {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      display: grid; place-items: center;
+      border: 1px solid var(--line); color: var(--neon-soft);
+      font-size: 0.85rem; transition: transform 0.3s ease, background 0.2s;
+    }
+    .acc-item.open .acc-chevron {
+      transform: rotate(180deg);
+      background: rgba(0,180,255,0.12);
+      border-color: rgba(0,180,255,0.3);
+    }
+    .acc-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.35s ease;
+    }
+    .acc-item.open .acc-panel { grid-template-rows: 1fr; }
+    .acc-panel-inner {
+      overflow: hidden;
+      min-height: 0;
+    }
+    .acc-body {
+      padding: 0 1.25rem 1.25rem 1.25rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      border-top: 1px solid transparent;
+    }
+    .acc-item.open .acc-body {
+      border-top-color: var(--line);
+      padding-top: 1rem;
+    }
+    .acc-body p + p { margin-top: 0.75rem; }
+
+    /* Daily compliance service chips */
+    .daily-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.65rem;
+      margin-top: 0.35rem;
+    }
+    @media (max-width: 640px) {
+      .daily-grid { grid-template-columns: 1fr; }
+      .acc-trigger { padding: 1rem; }
+      .acc-title { font-size: 0.95rem; }
+      .portfolio-showcase { padding: 1.4rem 1.15rem; }
+    }
+    .daily-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.65rem;
+      padding: 0.85rem 0.9rem;
+      border-radius: 12px;
+      background: rgba(0,180,255,0.05);
+      border: 1px solid rgba(0,180,255,0.12);
+      color: rgba(255,255,255,0.88);
+      font-size: 0.9rem;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .daily-item i {
+      flex-shrink: 0;
+      width: 22px; height: 22px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: rgba(0,180,255,0.18);
+      color: var(--neon-soft);
+      font-style: normal;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+    .daily-note {
+      margin-top: 1rem;
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px dashed rgba(255,255,255,0.12);
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+    .daily-cta {
+      display: flex; flex-wrap: wrap; gap: 0.65rem; margin-top: 1.1rem;
+    }
+
+    /* Portfolio showcase redesign */
+    #portfolio { padding-top: 4.5rem; padding-bottom: 3.75rem; overflow: hidden; }
+    .portfolio-showcase {
+      max-width: 820px;
+      margin: 0 auto 1.75rem;
+      padding: 1.75rem 1.5rem;
+      border-radius: 22px;
+      text-align: center;
+      background: linear-gradient(160deg, rgba(0,180,255,0.08), rgba(255,255,255,0.03));
+      border: 1px solid rgba(0,180,255,0.22);
+      box-shadow: 0 0 50px rgba(0,180,255,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .portfolio-showcase::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 50% 0%, rgba(0,180,255,0.12), transparent 60%);
+      pointer-events: none;
+    }
+    .portfolio-showcase-inner { position: relative; z-index: 1; }
+    .portfolio-kicker {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-size: 0.74rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--neon-soft);
+      margin-bottom: 0.85rem;
+    }
+    .portfolio-showcase h2 {
+      font-size: clamp(1.7rem, 3.5vw, 2.35rem);
+      font-weight: 600; letter-spacing: -0.03em; line-height: 1.15;
+      margin-bottom: 0.85rem;
+    }
+    .portfolio-showcase h2 em {
+      font-style: normal; color: var(--neon-soft);
+      text-shadow: 0 0 28px rgba(0,180,255,0.3);
+    }
+    .portfolio-showcase p {
+      color: var(--muted); font-size: 1.02rem; line-height: 1.7;
+      max-width: 36rem; margin: 0 auto 1.25rem;
+    }
+    .portfolio-pills {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem;
+    }
+    .portfolio-pill {
+      padding: 0.4rem 0.85rem; border-radius: 999px;
+      font-size: 0.78rem; font-weight: 600;
+      color: rgba(255,255,255,0.82);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
     /* Portfolio — floating marquee (compact) */
-    #portfolio { padding-top: 4rem; padding-bottom: 3.5rem; overflow: hidden; }
     .sites-marquee {
       position: relative;
       margin-top: 0.5rem;
@@ -766,8 +954,8 @@
           <a href="#process">How It Works</a>
           <a href="#about">About</a>
           <a href="#offerings">Services</a>
+          <a href="#daily-compliance">Daily Compliance</a>
           <a href="#portfolio">Websites</a>
-          <a href="#why">Why Us</a>
           <a href="#testimonials">Reviews</a>
           <a href="#contact" class="btn btn-neon nav-cta">Start Registration</a>
         </nav>
@@ -890,51 +1078,198 @@
         </div>
       </section>
 
-      <!-- Specialization -->
-      <section id="specialization">
-        <div class="container">
-          <div class="section-head center">
-            <span class="section-label">Our Specialization</span>
-            <h2>Excellence comes from specialization</h2>
-            <p>Rather than offering generalized services, we operate through dedicated teams of professionals, each focused on a specific domain of expertise.</p>
-          </div>
-          <div class="team-grid">
-            <article class="team-card glass reveal">
-              <div class="team-icon" aria-hidden="true">📋</div>
-              <h3>Registration &amp; Licensing Team</h3>
-              <p>A specialized team focused exclusively on obtaining registrations and licenses for market intermediaries. From preparing documentation to regulatory filings and follow-ups with authorities, our experts ensure a smooth registration process for our clients.</p>
-            </article>
-            <article class="team-card glass reveal reveal-d1">
-              <div class="team-icon" aria-hidden="true">⚖️</div>
-              <h3>Compliance &amp; Regulatory Team</h3>
-              <p>Our compliance professionals assist intermediaries in establishing and maintaining robust compliance frameworks. We help create policies, procedures, reporting mechanisms, and operational structures required to comply with regulatory requirements and industry best practices.</p>
-            </article>
-            <article class="team-card glass reveal reveal-d2">
-              <div class="team-icon" aria-hidden="true">💻</div>
-              <h3>Technology &amp; IT Support Team</h3>
-              <p>Our technology team designs and develops websites, applications, and digital infrastructure tailored for financial market professionals — practical, professional, and built to support how you serve clients.</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- Why -->
+      <!-- Specialization + Why — compact accordions -->
       <section id="why">
         <div class="container">
           <div class="section-head center">
             <span class="section-label">Why CompliTech</span>
-            <h2>Why professionals choose us for SEBI registrations &amp; compliances</h2>
-            <p>When your license is on the line, you need a team that owns the process — not just advice.</p>
+            <h2>Specialized teams. Clear reasons to choose us.</h2>
+            <p>Click any item below to explore our teams and why professionals trust CompliTech — kept compact so the page stays clean.</p>
           </div>
-          <div class="why-grid">
-            <article class="why-card glass reveal"><h3>⚡ You barely lift a finger</h3><p>Share basic information and documents. We manage application prep, filings, follow-ups, and authority communication until registration is granted.</p></article>
-            <article class="why-card glass reveal reveal-d1"><h3>🛡️ Built for SEBI intermediaries</h3><p>We specialize in Research Analysts, Investment Advisers, and market participants — not generic consultancy. We speak the language of SEBI processes.</p></article>
-            <article class="why-card glass reveal reveal-d2"><h3>📋 Registration + compliance together</h3><p>Don’t get stuck after the certificate. We set up policies, onboarding, disclosures, and monitoring so you can start operations immediately.</p></article>
-            <article class="why-card glass reveal"><h3>💻 Website &amp; tech under one roof</h3><p>Need a professional, compliance-ready website? Our developers build it — trusted by clients like Jayesh, Vibhuti, and more.</p></article>
-            <article class="why-card glass reveal reveal-d1"><h3>🤝 Long-term compliance partner</h3><p>We stay after registration for periodic filings, reporting, and ongoing support — so compliance never becomes a monthly headache.</p></article>
-            <article class="why-card glass reveal reveal-d2"><h3>⭐ Proven results, real clients</h3><p>50+ Successful Registrations &amp; Growing. Real testimonials from registered intermediaries who call the process hassle-free and professional.</p></article>
+
+          <div class="accordion reveal" data-accordion>
+            <div class="acc-item">
+              <button type="button" class="acc-trigger" aria-expanded="false">
+                <span class="acc-trigger-main">
+                  <span class="acc-icon" aria-hidden="true">📋</span>
+                  <span>
+                    <span class="acc-title">Registration &amp; Licensing Team</span>
+                    <span class="acc-sub">Documentation, filings &amp; authority follow-ups</span>
+                  </span>
+                </span>
+                <span class="acc-chevron" aria-hidden="true">▾</span>
+              </button>
+              <div class="acc-panel">
+                <div class="acc-panel-inner">
+                  <div class="acc-body">
+                    <p>A specialized team focused exclusively on obtaining registrations and licenses for market intermediaries. From preparing documentation to regulatory filings and follow-ups with authorities, our experts ensure a smooth registration process for our clients.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button type="button" class="acc-trigger" aria-expanded="false">
+                <span class="acc-trigger-main">
+                  <span class="acc-icon" aria-hidden="true">⚖️</span>
+                  <span>
+                    <span class="acc-title">Compliance &amp; Regulatory Team</span>
+                    <span class="acc-sub">Frameworks, policies &amp; governance</span>
+                  </span>
+                </span>
+                <span class="acc-chevron" aria-hidden="true">▾</span>
+              </button>
+              <div class="acc-panel">
+                <div class="acc-panel-inner">
+                  <div class="acc-body">
+                    <p>Our compliance professionals assist intermediaries in establishing and maintaining robust compliance frameworks. We help create policies, procedures, reporting mechanisms, and operational structures required to comply with regulatory requirements and industry best practices.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button type="button" class="acc-trigger" aria-expanded="false">
+                <span class="acc-trigger-main">
+                  <span class="acc-icon" aria-hidden="true">💻</span>
+                  <span>
+                    <span class="acc-title">Technology &amp; IT Support Team</span>
+                    <span class="acc-sub">Websites, apps &amp; digital infrastructure</span>
+                  </span>
+                </span>
+                <span class="acc-chevron" aria-hidden="true">▾</span>
+              </button>
+              <div class="acc-panel">
+                <div class="acc-panel-inner">
+                  <div class="acc-body">
+                    <p>Our technology team designs and develops websites, applications, and digital infrastructure tailored for financial market professionals — practical, professional, and built to support how you serve clients.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button type="button" class="acc-trigger" aria-expanded="false">
+                <span class="acc-trigger-main">
+                  <span class="acc-icon" aria-hidden="true">⚡</span>
+                  <span>
+                    <span class="acc-title">You barely lift a finger</span>
+                    <span class="acc-sub">End-to-end process ownership</span>
+                  </span>
+                </span>
+                <span class="acc-chevron" aria-hidden="true">▾</span>
+              </button>
+              <div class="acc-panel">
+                <div class="acc-panel-inner">
+                  <div class="acc-body">
+                    <p>Share basic information and documents. We manage application prep, filings, follow-ups, and authority communication until registration is granted.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button type="button" class="acc-trigger" aria-expanded="false">
+                <span class="acc-trigger-main">
+                  <span class="acc-icon" aria-hidden="true">🛡️</span>
+                  <span>
+                    <span class="acc-title">Built for SEBI intermediaries</span>
+                    <span class="acc-sub">Specialized — not generic consultancy</span>
+                  </span>
+                </span>
+                <span class="acc-chevron" aria-hidden="true">▾</span>
+              </button>
+              <div class="acc-panel">
+                <div class="acc-panel-inner">
+                  <div class="acc-body">
+                    <p>We specialize in Research Analysts, Investment Advisers, and market participants — not generic consultancy. We speak the language of SEBI processes.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button type="button" class="acc-trigger" aria-expanded="false">
+                <span class="acc-trigger-main">
+                  <span class="acc-icon" aria-hidden="true">📋</span>
+                  <span>
+                    <span class="acc-title">Registration + compliance together</span>
+                    <span class="acc-sub">Ready to operate after the certificate</span>
+                  </span>
+                </span>
+                <span class="acc-chevron" aria-hidden="true">▾</span>
+              </button>
+              <div class="acc-panel">
+                <div class="acc-panel-inner">
+                  <div class="acc-body">
+                    <p>Don’t get stuck after the certificate. We set up policies, onboarding, disclosures, and monitoring so you can start operations immediately.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button type="button" class="acc-trigger" aria-expanded="false">
+                <span class="acc-trigger-main">
+                  <span class="acc-icon" aria-hidden="true">💻</span>
+                  <span>
+                    <span class="acc-title">Website &amp; tech under one roof</span>
+                    <span class="acc-sub">Compliance-ready digital presence</span>
+                  </span>
+                </span>
+                <span class="acc-chevron" aria-hidden="true">▾</span>
+              </button>
+              <div class="acc-panel">
+                <div class="acc-panel-inner">
+                  <div class="acc-body">
+                    <p>Need a professional, compliance-ready website? Our developers build it — trusted by clients like Jayesh, Vibhuti, and more.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button type="button" class="acc-trigger" aria-expanded="false">
+                <span class="acc-trigger-main">
+                  <span class="acc-icon" aria-hidden="true">🤝</span>
+                  <span>
+                    <span class="acc-title">Long-term compliance partner</span>
+                    <span class="acc-sub">Ongoing filings &amp; support</span>
+                  </span>
+                </span>
+                <span class="acc-chevron" aria-hidden="true">▾</span>
+              </button>
+              <div class="acc-panel">
+                <div class="acc-panel-inner">
+                  <div class="acc-body">
+                    <p>We stay after registration for periodic filings, reporting, and ongoing support — so compliance never becomes a monthly headache.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="acc-item">
+              <button type="button" class="acc-trigger" aria-expanded="false">
+                <span class="acc-trigger-main">
+                  <span class="acc-icon" aria-hidden="true">⭐</span>
+                  <span>
+                    <span class="acc-title">Proven results, real clients</span>
+                    <span class="acc-sub">50+ successful registrations &amp; growing</span>
+                  </span>
+                </span>
+                <span class="acc-chevron" aria-hidden="true">▾</span>
+              </button>
+              <div class="acc-panel">
+                <div class="acc-panel-inner">
+                  <div class="acc-body">
+                    <p>50+ Successful Registrations &amp; Growing. Real testimonials from registered intermediaries who call the process hassle-free and professional.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="why-cta reveal">
+
+          <div class="why-cta reveal" style="margin-top:1.75rem;">
             <a href="https://wa.me/916398254260?text=Hi%20CompliTech%2C%20I%20want%20to%20start%20my%20SEBI%20registration." class="btn btn-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp Us Now</a>
             <a href="#contact" class="btn btn-outline">Or Send an Enquiry</a>
           </div>
@@ -983,13 +1318,81 @@
         </div>
       </section>
 
-      <!-- Portfolio — floating marquee -->
-      <section id="portfolio">
+      <!-- Daily Compliance — expandable -->
+      <section id="daily-compliance">
         <div class="container">
           <div class="section-head center">
-            <span class="section-label">Client Websites Live</span>
-            <h2>35+ Websites &amp; Tech Tools Successfully Running in the Market</h2>
-            <p>Professional, compliance-ready websites and tech tools for SEBI intermediaries — built by our technology team.</p>
+            <span class="section-label">Ongoing Support</span>
+            <h2>Daily Compliance Management</h2>
+            <p>Optional day-to-day compliance operations — click below to view the complete service coverage. Details stay hidden until you open them.</p>
+          </div>
+
+          <div class="accordion reveal" data-accordion>
+            <div class="acc-item" id="daily-compliance-panel">
+              <button type="button" class="acc-trigger" aria-expanded="false" id="dailyComplianceBtn">
+                <span class="acc-trigger-main">
+                  <span class="acc-icon" aria-hidden="true">📅</span>
+                  <span>
+                    <span class="acc-title">Daily Compliance Management</span>
+                    <span class="acc-sub">Optional · Click to view full services covered</span>
+                  </span>
+                </span>
+                <span class="acc-chevron" aria-hidden="true">▾</span>
+              </button>
+              <div class="acc-panel">
+                <div class="acc-panel-inner">
+                  <div class="acc-body">
+                    <p>
+                      Stay operationally ready every trading day. Our Daily Compliance Management support
+                      handles the recurring tasks that keep your practice aligned, organised, and audit-ready —
+                      so you can focus on research and clients.
+                    </p>
+                    <p style="color:#fff;font-weight:600;margin-top:1rem;margin-bottom:0.65rem;">Services covered</p>
+                    <div class="daily-grid">
+                      <div class="daily-item"><i>✓</i><span>KYC verification through KRA</span></div>
+                      <div class="daily-item"><i>✓</i><span>Client documentation and folder management</span></div>
+                      <div class="daily-item"><i>✓</i><span>Daily trade entry records and reconciliation</span></div>
+                      <div class="daily-item"><i>✓</i><span>Uploading two research trades every day</span></div>
+                      <div class="daily-item"><i>✓</i><span>Auto-sync of client data to the drive</span></div>
+                      <div class="daily-item"><i>✓</i><span>Website updates with rationale reports</span></div>
+                      <div class="daily-item"><i>✓</i><span>Compliance website performance monitoring</span></div>
+                      <div class="daily-item"><i>✓</i><span>FIU and SCORES dashboard monitoring</span></div>
+                    </div>
+                    <div class="daily-note">
+                      This is an optional add-on for professionals who want structured daily operational support
+                      after registration. Ask us what fits your practice.
+                    </div>
+                    <div class="daily-cta">
+                      <a href="https://wa.me/916398254260?text=Hi%20CompliTech%2C%20I%20want%20to%20know%20about%20Daily%20Compliance%20Management." class="btn btn-neon" target="_blank" rel="noopener noreferrer">Ask about Daily Compliance</a>
+                      <a href="#contact" class="btn btn-outline">Send an enquiry</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Portfolio — redesigned showcase + marquee -->
+      <section id="portfolio">
+        <div class="container">
+          <div class="portfolio-showcase reveal">
+            <div class="portfolio-showcase-inner">
+              <div class="portfolio-kicker">✦ Built by CompliTech Technology</div>
+              <h2>Websites that look premium — and work for <em>SEBI professionals</em></h2>
+              <p>
+                We design and develop high-quality, professional websites for Research Analysts, Investment Advisers,
+                and market intermediaries. Clean design, clear structure, and compliance-aware presentation —
+                so your online presence builds trust from the first visit.
+              </p>
+              <div class="portfolio-pills">
+                <span class="portfolio-pill">35+ live websites &amp; tools</span>
+                <span class="portfolio-pill">Compliance-aware design</span>
+                <span class="portfolio-pill">Fast, modern &amp; mobile-ready</span>
+                <span class="portfolio-pill">Built for market professionals</span>
+              </div>
+            </div>
           </div>
         </div>
         <div class="sites-marquee reveal" id="sitesMarquee">
@@ -1416,6 +1819,8 @@
           <a href="#process">How It Works</a>
           <a href="#about">About</a>
           <a href="#offerings">Services</a>
+          <a href="#daily-compliance">Daily Compliance</a>
+          <a href="#portfolio">Websites</a>
           <a href="#why">Why Us</a>
           <a href="#testimonials">Reviews</a>
           <a href="#contact">Contact</a>
@@ -1507,6 +1912,44 @@
         });
       }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
       els.forEach((el) => io.observe(el));
+    })();
+
+    /* Accordion expand / collapse */
+    (function initAccordions() {
+      document.querySelectorAll("[data-accordion]").forEach((root) => {
+        root.querySelectorAll(".acc-item").forEach((item) => {
+          const btn = item.querySelector(".acc-trigger");
+          if (!btn) return;
+          btn.addEventListener("click", () => {
+            const isOpen = item.classList.contains("open");
+            // Close siblings in same accordion group
+            root.querySelectorAll(".acc-item.open").forEach((other) => {
+              if (other !== item) {
+                other.classList.remove("open");
+                const ob = other.querySelector(".acc-trigger");
+                if (ob) ob.setAttribute("aria-expanded", "false");
+              }
+            });
+            item.classList.toggle("open", !isOpen);
+            btn.setAttribute("aria-expanded", !isOpen ? "true" : "false");
+          });
+        });
+      });
+
+      // Deep-link: open Daily Compliance when hash is present
+      function openDailyFromHash() {
+        if (location.hash !== "#daily-compliance" && location.hash !== "#daily-compliance-panel") return;
+        const item = document.querySelector("#daily-compliance-panel");
+        const btn = document.getElementById("dailyComplianceBtn");
+        if (!item || !btn) return;
+        item.classList.add("open");
+        btn.setAttribute("aria-expanded", "true");
+        setTimeout(() => {
+          item.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 80);
+      }
+      window.addEventListener("hashchange", openDailyFromHash);
+      openDailyFromHash();
     })();
 
     /* Client websites — seamless floating marquee */
